@@ -1,0 +1,255 @@
+----------------------. 
+--Explore Data
+--------------------
+--Q1. Display ALL columns in the dataset
+SELECT*
+FROM retailanalysis.brightretail.brt_sales;
+
+
+
+
+
+-- 9 column were displayed with 1000 rows
+
+--b.  Select specific columns
+SELECT  `Transaction id`,
+        Date,
+        `Customer ID`
+        FROM retailanalysis.brightretail.brt_sales;
+
+
+
+
+
+  -- 3 Coloumns were retruend to upto 1000 rows.
+---------------------------------------------
+  --Q2. Use of DISTINCT statement
+--a.  Distinct product category
+  SELECT DISTINCT  `Product Category`
+  FROM retailanalysis.brightretail.brt_sales;
+
+
+
+
+
+--There are 3 rows with 3 different product categories found.
+
+  --b. Distinct gender 
+  SELECT DISTINCT  Gender
+  FROM retailanalysis.brightretail.brt_sales;
+
+
+
+
+
+--There are two rows of gender male and female returned
+
+---------------------------------------------
+--Q3. The Use of WHERE Clause
+
+--a.  Dsiplay where Age is > 40
+
+SELECT*
+FROM retailanalysis.brightretail.brt_sales
+WHERE Age > 40;
+
+
+
+
+
+
+--534 rows of data were returned where Age is greater than 40
+--b. Display where Price Per Unit is BETWEEN 100 and 500.
+
+SELECT `Transaction id`,
+        `Customer ID`,
+        Gender,
+        Age,
+        `Product Category`,
+        Quantity,
+        `Price per Unit`,
+        `Total Amount`
+FROM retailanalysis.brightretail.brt_sales
+WHERE `Price per Unit` BETWEEN 100 AND 500;
+
+
+
+
+
+
+--There are 396 rows returned from the data set where the price is between 100 and 500
+--c.  Diplay either Beauty OR Electronics
+
+SELECT*
+FROM retailanalysis.brightretail.brt_sales
+WHERE `Product Category` IN ('Beauty', 'Electronics');
+
+
+
+
+
+
+--There are 649 rows of data returned where the product category is either beauty or electronics
+
+--d.  Check where Product Category is not clothing.
+SELECT `Transaction ID`,
+        Date,
+        `Customer ID`,
+        Gender,
+        Age,
+        `Product Category`,
+        Quantity,
+        `Price per Unit`,
+        `Total Amount`
+FROM retailanalysis.brightretail.brt_sales
+WHERE `Product Category` <> 'Clothing';
+
+
+
+--649 rows od data were returned where product category is not clothing.
+
+--e.  Show where transaction quantity is >= 3
+
+SELECT*
+FROM retailanalysis.brightretail.brt_sales
+WHERE `Quantity` >=3;
+
+
+
+--504 rows of data were returned showing where the quantity is geater or equal 3
+
+----------------------------------
+--Aggregates
+---------------------------------
+--Q10. Count of ALL transactions
+
+SELECT COUNT(*)
+FROM retailanalysis.brightretail.brt_sales;
+
+
+
+
+--1 Column was returned with 1000 rows
+--Q11 Find average age of customers
+
+SELECT AVG(Age) AS Average_Age
+FROM retailanalysis.brightretail.brt_sales;
+
+
+
+--The average age of the customers is 41 years.
+
+--Q12.  Total quantity of products sold
+SELECT SUM(Quantity) AS Total_Quantity
+FROM retailanalysis.brightretail.brt_sales;
+
+
+
+
+--The total quantity is 2514 
+--Q13. maximumn total amount spent in a transaction
+
+SELECT MAX (`Total Amount`) AS Max_Total_Amount
+FROM retailanalysis.brightretail.brt_sales;
+
+
+
+
+-- 2000 was spent in a single trasaction 
+--Q14.  Find the minimum in a unit per price
+
+SELECT MIN (`Price per Unit`) AS Min_Price_per_Unit
+FROM retailanalysis.brightretail.brt_sales;
+
+
+--The minumum is 25 price per unit.
+
+-----------------------------------------------
+--Group by
+----------------------------------------------
+--Q15.  Find transaction per category
+
+SELECT COUNT(*) AS Transaction_Count,
+        `Product Category`
+FROM retailanalysis.brightretail.brt_sales
+GROUP BY `Product Category`;
+
+
+
+
+--The Transaction Count for Beauty category is 307, 351 for Clothing and 342 for Elctronics 
+--Q16. Find Total revenue per Gender
+
+SELECT SUM(`Total Amount`) AS Total_Revenue,
+          Gender
+FROM retailanalysis.brightretail.brt_sales
+GROUP BY Gender;
+
+
+
+
+-- Males have spent a colletive 223 160 and females have spent 232 840
+
+--  Q17. Find the average price per unit of each category 
+
+SELECT AVG(`Price per Unit`) AS Average_Price,
+          `Product Category`
+FROM retailanalysis.brightretail.brt_sales
+GROUP BY `Product Category`;
+
+
+
+
+--Beauty range is averaging 184, while clothing has 174 and electronics is 181 
+
+---------------------------------------
+--HAVING statement
+---------------------------------------
+--Q18.  Find the total revenue per product category where total revenue is greater than 10000
+
+SELECT SUM (`Total Amount`) AS Total_Revenue,
+          `Product Category`
+FROM retailanalysis.brightretail.brt_sales
+GROUP BY `Product Category`
+HAVING Total_Revenue >10000;
+
+
+
+
+--The Total revenue is 143 515 for Beauty products, 155 580 for Clothing and electronics with 156 905.
+
+--Q19 Find the average quantity per product where the average is morethan 2.
+
+SELECT AVG (Quantity) AS Average_Quantity,
+            `Product Category`
+FROM retailanalysis.brightretail.brt_sales
+GROUP BY `Product Category`
+HAVING Average_Quantity >2;
+
+
+
+
+--------------------------------------------
+--Q20. Display a column called Spending_Level that shows High if Total Amount is greater than 1000 or Low if not.
+
+SELECT `Transaction id`,
+        `Total Amount`,
+    CASE 
+        WHEN `Total Amount` > 1000 THEN 'High'
+        ELSE 'Low'
+        END AS Spending_Level
+FROM retailanalysis.brightretail.brt_sales;
+
+--Q21. Display a new column called Age_Group that labels customers as:
+ 'Youth' if Age < 30    'Adult' if Age is between 30 and 59  'Senior' if Age >= 60
+
+ SELECT  `Customer id`,
+        Age,
+  CASE 
+      WHEN Age < 30 THEN 'Youth'
+      WHEN AGE BETWEEN 30 AND 59 THEN 'Adult'
+      WHEN Age >= 60 THEN 'Senior'  
+
+    END AS Age_Group
+  FROM retailanalysis.brightretail.brt_sales;
+
