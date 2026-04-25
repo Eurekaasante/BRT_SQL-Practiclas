@@ -1,0 +1,117 @@
+SELECT*  FROM `brightmotors-494417.Case_analysis.Sales` LIMIT 5
+
+--Q1.
+--Explore the DataSet
+
+
+SELECT *
+FROM `brightmotors-494417.Case_analysis.Sales`
+WHERE `date` BETWEEN '2023-01-01' AND '2023-12-31';
+
+--998 records of data were returned for dates in 2023
+
+--Q2. Display of ALL transactions where Total Amount is more than the average Total AMount of the entire dataset
+
+SELECT 
+    `Transaction ID`,
+    `Date`,
+    `Customer ID`,
+    `Gender`,
+    `Age`,
+    `Product Category`,
+    `Quantity`,
+    `Price per Unit`,
+    `Total Amount`
+FROM `brightmotors-494417.Case_analysis.Sales`
+WHERE `Total Amount` > (
+    SELECT AVG(`Total Amount`) 
+    FROM `brightmotors-494417.Case_analysis.Sales`
+);
+--350 rows of dataset were returned
+
+--Q3. Agreegation: Calcualte the total revenue
+
+SELECT SUM(`Total Amount`) AS Total_Revenue
+FROM `brightmotors-494417.Case_analysis.Sales`;
+--Total Revenue is 456 000
+
+--Q4. DISTINCT display of ALL distinct Product categories in the dataset
+
+SELECT DISTINCT `Product Category`
+FROM `brightmotors-494417.Case_analysis.Sales`;
+
+--3 Categories gave been returned
+
+--Q5 Group by : Calculate the qunatity sold for each product category
+
+SELECT `Product Category`,
+    SUM (Quantity) AS Total_Quantity
+FROM `brightmotors-494417.Case_analysis.Sales`
+GROUP BY `Product Category`;
+--Three Categories are returned with 771 for Beauty, 894 for CLothing and Elctronics accounting for 849.
+
+--Q6. Create a column called Age_Group that classifies customers as: –  'Youth'  (<30) 
+ 'Adult'  (30-59) 'Senior' (60+) 
+
+ SELECT `Customer ID`,
+        Age,
+    CASE
+      WHEN Age < 30 THEN 'Youth'
+      WHEN Age BETWEEN 30 AND 50 THEN 'Adult'
+    ELSE 'Senior'
+    END AS Age_Group 
+FROM `brightmotors-494417.Case_analysis.Sales`;
+
+--3 Columns were returned.
+
+--Q7. Check high value transactions for each Gender where transactions occured were >500
+
+SELECT Gender,
+      Count(`Transaction id`) AS High_Value_Transaction
+FROM `brightmotors-494417.Case_analysis.Sales`
+WHERE `Total Amount` > 500
+GROUP BY Gender;
+
+--Females have done 155 High value transactions and males have done 144 high value transactions.
+
+--Q8  For each product category, show ONLY those categories where the total revenue exceeds 5000.
+
+SELECT `Product Category`,
+ SUM (`Total Amount`) AS Total_Revenue
+ FROM `brightmotors-494417.Case_analysis.Sales`
+ GROUP BY `Product Category`
+ HAVING Total_Revenue > 5000;
+
+ --Three Categories were returned and Total revenue for Beauty range is 143 515, 155 580 for Clothing and lastly electronics accounting for 156 905
+
+ --Q9.   Display a new columm called Unit_Cost_Category that labels a trnsaction as: -Cheap if Price per Unit <50, 'Moderate' if Price per Unit BETWEEN 50 and 200, 'Expesive' If Price_per Unit >200
+
+ SELECT `Price per Unit`,
+    SUM (`Transaction ID`) AS Unit_Cost_Category,
+    CASE 
+      WHEN `Price per Unit` < 50 THEN 'Cheap'
+      WHEN `Price per Unit` BETWEEN 50 AND 200 THEN 'Moderate'
+    ELSE 'Expensive'
+
+    END AS Unit_Cost_Category
+FROM `brightmotors-494417.Case_analysis.Sales`
+GROUP BY `Price per Unit`;
+
+--Q10 Display all transactions from customers aged 40 or older and add a column Spending_Level 
+
+SELECT 
+    `Customer ID`,
+    Age,
+    SUM(`Total Amount`) AS Total_Amount,
+    -- We must apply the CASE to the SUM result
+    CASE 
+      WHEN SUM(`Total Amount`) > 1000 THEN 'High'
+      ELSE 'Low'
+    END AS Spending_Level
+FROM `brightmotors-494417.Case_analysis.Sales`
+WHERE Age >= 40
+GROUP BY 
+    Age,
+    `Customer ID`;
+    --558 rows of data were returned.
+
